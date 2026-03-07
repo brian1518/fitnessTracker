@@ -1,0 +1,37 @@
+/* Turquoise Theme */
+:root {
+  --turquoise: #40E0D0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h1 {
+  color: var(--turquoise);
+  font-weight: bold;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.btn-turquoise {
+  background-color: var(--turquoise);
+  color: white;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn-turquoise:hover {
+  background-color: #36c9c2;
+}
+
+#workoutList li {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  border-left: 5px solid var(--turquoise);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
