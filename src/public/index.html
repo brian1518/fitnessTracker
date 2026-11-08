@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lantern Training | Workout Journal</title>
+  <link rel="stylesheet" href="/css/app.css">
+  <script src="/js/workouts.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="brand"><span class="lantern" aria-hidden="true"></span><span>Lantern Training</span></div>
+      <h1>Track your strength.</h1>
+      <p>Log each set. Compare your sessions.</p>
+    </header>
+    <p class="eyebrow">All-time training</p><dl class="stats">
+      <div><dt>Sets logged</dt><dd id="setCount">0</dd></div>
+      <div><dt>Total reps</dt><dd id="repCount">0</dd></div>
+      <div><dt>Volume (kg)</dt><dd id="volume">0</dd></div>
+    </dl>
+    <div class="dashboard">
+      <section class="workout-panel">
+        <h2 id="formTitle">Log a set</h2>
+        <form id="workoutForm">
+          <label>Exercise<input id="exercise" list="exerciseList" placeholder="e.g. Bench Press" maxlength="100" required></label>
+          <datalist id="exerciseList"></datalist><p id="previousSet" class="hint" aria-live="polite">Choose an exercise to see your latest dated set.</p>
+          <div class="fields">
+            <label>Weight (kg)<input id="weight" type="number" min="0" step="any" placeholder="0 for bodyweight" required></label>
+            <label>Reps<input id="reps" type="number" min="1" step="1" placeholder="8" required></label>
+          </div>
+          <label>Set notes (optional)<textarea id="notes" rows="2" maxlength="300" placeholder="How did the set feel? Any technique cues?"></textarea></label><label>Training date<input id="date" type="date" required></label>
+          <div class="actions">
+            <button id="saveButton" type="submit">Save set</button>
+            <button id="cancelEdit" type="button" class="secondary" hidden>Cancel</button>
+          </div>
+        </form>
+        <p id="status" role="status"></p>
+      </section>
+      <section class="workout-panel">
+        <h2>Training history</h2>
+        <label>Filter by exercise<input id="filter" type="search" placeholder="Search exercise names"></label>
+        <p id="empty"></p>
+        <ul id="workoutList"></ul>
+      </section>
+    </div>
+  <section class="progress-panel">
+
+<h2>Exercise progress</h2>
+<p class="hint">Compare your latest two dated sessions. Use your notes to track technique and effort alongside weight and reps.</p>
+<label>Exercise<select id="progressExercise"><option value="">Choose an exercise</option></select></label>
+<p id="progressSummary" aria-live="polite">Log dated sets to start tracking progress.</p>
+</section>
+
+</main>
+</body>
+</html>
