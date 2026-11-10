@@ -6,7 +6,7 @@ The public interface runs on GitHub Pages. Express and PostgreSQL run on Render.
 
 1. Push the app source and render.yaml to brian1518/fitnessTracker on the main branch.
 2. In Render, choose New > Blueprint and select this repository (or paste its public Git URL).
-3. Review the resources and price estimate before deploying. The blueprint selects paid web and PostgreSQL plans in Singapore for durable hosting. No resources are created by the local build.
+3. Review the resources and price estimate before deploying. The blueprint selects free web and PostgreSQL plans in Singapore. The web service sleeps when idle; the database expires after 30 days. Upgrade or export data before expiry. No resources are created by the local build.
 4. Wait for the backend to report healthy. Open its HTTPS URL followed by /healthz; it should return {"ok":true}.
 5. In GitHub repository Settings > Secrets and variables > Actions > Variables, add PAGES_API_ORIGIN with the Render service origin, e.g. https://your-service.onrender.com. This is a public URL, not a secret. Do not include /api.
 6. In repository Settings > Pages, select GitHub Actions as the source.

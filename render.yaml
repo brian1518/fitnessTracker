@@ -1,9 +1,9 @@
-# Paid durable hosting. Review Render's price estimate before creating resources.
+# Free trial hosting: web service sleeps when idle; database expires after 30 days.
 services:
   - type: web
     name: lantern-training-api
     runtime: node
-    plan: 0.5c-512mb
+    plan: free
     region: singapore
     buildCommand: npm ci --omit=dev
     startCommand: npm start
@@ -33,7 +33,7 @@ services:
         value: grok-4.7
 databases:
   - name: lantern-training-db
-    plan: 0.1c-256mb
+    plan: free
     region: singapore
     databaseName: lantern_training
     user: lantern
