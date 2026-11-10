@@ -1,0 +1,40 @@
+# Paid durable hosting. Review Render's price estimate before creating resources.
+services:
+  - type: web
+    name: lantern-training-api
+    runtime: node
+    plan: 0.5c-512mb
+    region: singapore
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: TRUST_PROXY
+        value: 1
+      - key: APP_ORIGIN
+        value: https://brian1518.github.io
+      - key: DATABASE_MODE
+        value: postgres
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lantern-training-db
+          property: connectionString
+      - key: AI_ENABLED
+        value: false
+      - key: AI_DAILY_LIMIT
+        value: 10
+      - key: XAI_MODEL
+        value: grok-4.7
+databases:
+  - name: lantern-training-db
+    plan: 0.1c-256mb
+    region: singapore
+    databaseName: lantern_training
+    user: lantern
+    ipAllowList: []

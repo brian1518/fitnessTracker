@@ -3,3 +3,11 @@ node_modules/
 .env.*
 !.env.example
 npm-debug.log*
+.local-db/
+.db-password
+test-results/
+playwright-report/
+.fitness-db/
+.fitness-db.lock
+
+dist-pages/

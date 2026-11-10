@@ -1,0 +1,2 @@
+ALTER TABLE users ADD COLUMN is_demo BOOLEAN NOT NULL DEFAULT false;
+CREATE TABLE demo_seed_versions(version INTEGER PRIMARY KEY, created_at TIMESTAMPTZ NOT NULL DEFAULT now());

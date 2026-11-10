@@ -231,3 +231,13 @@ function updateProgress() {
 
 exercise.addEventListener("input", updatePreviousSet);
 $("progressExercise").addEventListener("change", updateProgress);
+
+document.getElementById("exportHistory").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(workouts, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "lantern-workout-history.json";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});

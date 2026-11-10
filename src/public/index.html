@@ -1,57 +1,532 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lantern Training | Workout Journal</title>
-  <link rel="stylesheet" href="/css/app.css">
-  <script src="/js/workouts.js" defer></script>
-</head>
-<body>
-  <main>
-    <header>
-      <div class="brand"><span class="lantern" aria-hidden="true"></span><span>Lantern Training</span></div>
-      <h1>Track your strength.</h1>
-      <p>Log each set. Compare your sessions.</p>
-    </header>
-    <p class="eyebrow">All-time training</p><dl class="stats">
-      <div><dt>Sets logged</dt><dd id="setCount">0</dd></div>
-      <div><dt>Total reps</dt><dd id="repCount">0</dd></div>
-      <div><dt>Volume (kg)</dt><dd id="volume">0</dd></div>
-    </dl>
-    <div class="dashboard">
-      <section class="workout-panel">
-        <h2 id="formTitle">Log a set</h2>
-        <form id="workoutForm">
-          <label>Exercise<input id="exercise" list="exerciseList" placeholder="e.g. Bench Press" maxlength="100" required></label>
-          <datalist id="exerciseList"></datalist><p id="previousSet" class="hint" aria-live="polite">Choose an exercise to see your latest dated set.</p>
-          <div class="fields">
-            <label>Weight (kg)<input id="weight" type="number" min="0" step="any" placeholder="0 for bodyweight" required></label>
-            <label>Reps<input id="reps" type="number" min="1" step="1" placeholder="8" required></label>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#09150f" />
+    <title>Lantern Training</title>
+    <link rel="stylesheet" href="./css/app.css" />
+    <script src="./js/config.js" defer></script>
+    <script src="./vendor/lucide.js" defer></script>
+    <script src="./js/workout-logger.js" defer></script>
+    <script src="./js/fitness.js" defer></script>
+  </head>
+  <body>
+    <div id="notice" role="status" aria-live="polite"></div>
+    <section id="authView" class="auth-layout">
+      <div class="auth-intro">
+        <div class="brand">
+          <span class="lantern" aria-hidden="true"></span>Lantern Training
+        </div>
+        <h1>A stronger session starts here.</h1>
+        <p>
+          Remember your last workout. Know your next target. Build progress you
+          can see.
+        </p>
+        <div class="intro-details">
+          <p>Record every working set</p>
+          <p>Progress at your own pace</p>
+          <p>Keep your training in one place</p>
+        </div>
+      </div>
+      <form id="authForm" class="card">
+        <h2 id="authTitle">Welcome back</h2>
+        <p class="muted">Your personal workout journal.</p>
+        <label id="nameLabel" hidden
+          >Name<input id="authName" autocomplete="name" maxlength="80"
+        /></label>
+        <label
+          >Email<input
+            id="authEmail"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            required
+        /></label>
+        <label
+          >Password<input
+            id="authPassword"
+            type="password"
+            autocomplete="current-password"
+            minlength="12"
+            maxlength="128"
+            required
+          /><small>At least 12 characters.</small></label
+        >
+        <button class="primary wide" type="submit" id="authSubmit">
+          Sign in
+        </button>
+        <button class="text-button wide" id="authToggle" type="button">
+          Create an account
+        </button>
+        <button id="demoLogin" class="secondary wide" type="button">
+          Explore demo workouts
+        </button>
+        <p class="hint">
+          Sample workouts and progress in a separate demo account.
+        </p>
+        <p id="authError" role="alert"></p>
+      </form>
+    </section>
+    <div id="appView" hidden>
+      <aside class="sidebar">
+        <a class="brand" href="#today"
+          ><span class="lantern" aria-hidden="true"></span>Lantern Training</a
+        >
+        <nav aria-label="Main navigation" id="navigation">
+          <a href="#today"><i data-lucide="dumbbell"></i>Today's workout</a>
+          <a href="#dashboard"
+            ><i data-lucide="layout-dashboard"></i>Dashboard</a
+          >
+          <a href="#history"><i data-lucide="history"></i>Workout history</a>
+          <a href="#library"><i data-lucide="search"></i>Exercise library</a>
+          <a href="#progress"
+            ><i data-lucide="chart-no-axes-combined"></i>Exercise progress</a
+          >
+          <a href="#plans"><i data-lucide="calendar-days"></i>Workout plans</a>
+          <a href="#coach"
+            ><i data-lucide="messages-square"></i>Fitness coach</a
+          >
+          <a href="#body"><i data-lucide="scale"></i>Body progress</a>
+          <a href="#goals"><i data-lucide="target"></i>Goals</a>
+          <a href="#settings"><i data-lucide="settings-2"></i>Settings</a>
+        </nav>
+        <div class="account">
+          <span id="accountName"></span
+          ><button id="logout" class="secondary">Sign out</button>
+        </div>
+      </aside>
+      <main id="main" tabindex="-1">
+        <div id="demoBanner" class="demo-banner" hidden>
+          Demo workspace · All history and measurements here are sample data.
+          Sign out to return to your account.
+        </div>
+        <header class="page-header">
+          <div>
+            <p class="eyebrow" id="pageEyebrow">YOUR TRAINING JOURNAL</p>
+            <h1 id="pageTitle">Today's workout</h1>
           </div>
-          <label>Set notes (optional)<textarea id="notes" rows="2" maxlength="300" placeholder="How did the set feel? Any technique cues?"></textarea></label><label>Training date<input id="date" type="date" required></label>
-          <div class="actions">
-            <button id="saveButton" type="submit">Save set</button>
-            <button id="cancelEdit" type="button" class="secondary" hidden>Cancel</button>
+          <span id="currentDate" class="muted"></span>
+        </header>
+        <section data-page="today">
+          <form id="workoutForm" novalidate>
+            <div class="session-toolbar card">
+              <div>
+                <label class="sr-only" for="workoutName">Workout name</label
+                ><input
+                  id="workoutName"
+                  class="session-name"
+                  maxlength="100"
+                  required
+                  placeholder="Name your workout"
+                />
+                <div class="session-metrics">
+                  <span id="sessionExerciseCount">0 exercises</span
+                  ><span id="sessionSetCount">0 sets done</span
+                  ><span id="sessionVolume">0 kg volume</span>
+                </div>
+              </div>
+              <div class="actions">
+                <button id="newWorkout" class="secondary" type="button">
+                  New</button
+                ><button id="saveWorkout" class="primary" type="submit">
+                  Finish workout
+                </button>
+              </div>
+            </div>
+            <div class="logger-layout">
+              <div>
+                <details class="card session-details">
+                  <summary>Session details &amp; recovery</summary>
+                  <div class="fields">
+                    <label
+                      >Date<input
+                        id="workoutDate"
+                        type="date"
+                        required /></label
+                    ><label
+                      >Fatigue (0–10)<input
+                        id="fatigue"
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="1"
+                        required
+                        value="0"
+                    /></label>
+                  </div>
+                  <label class="check"
+                    ><input id="pain" type="checkbox" />Pain or discomfort
+                    during this session</label
+                  ><label
+                    >Session notes<textarea
+                      id="sessionNotes"
+                      maxlength="1000"
+                      rows="2"
+                      placeholder="How are you feeling today?"
+                    ></textarea>
+                  </label>
+                </details>
+                <div id="exerciseCards" class="exercise-stack"></div>
+                <button
+                  id="addExercise"
+                  type="button"
+                  class="add-exercise-button"
+                >
+                  <i data-lucide="plus"></i>Add exercise
+                </button>
+                <p id="workoutError" role="alert"></p>
+              </div>
+              <aside class="workout-sidebar">
+                <div class="card rest-card">
+                  <div class="section-heading">
+                    <h2>Rest timer</h2>
+                    <i data-lucide="timer"></i>
+                  </div>
+                  <p id="timer" class="timer" role="timer">02:00</p>
+                  <p id="timerStatus" class="hint" aria-live="polite">
+                    Starts when you complete a set.
+                  </p>
+                  <div class="actions">
+                    <button id="startTimer" type="button" class="secondary">
+                      Start 2 min</button
+                    ><button id="stopTimer" type="button" class="text-button">
+                      Skip rest
+                    </button>
+                  </div>
+                </div>
+                <div class="card logger-help">
+                  <h2>One set at a time</h2>
+                  <p class="hint">
+                    Enter your actual weight and reps, then check off each
+                    finished set.
+                  </p>
+                  <p class="hint">
+                    Previous values help you compare. Suggested targets are
+                    always editable.
+                  </p>
+                  <p class="hint">
+                    Only checked sets are saved when you finish.
+                  </p>
+                  <p id="draftStatus" class="hint" role="status"></p>
+                </div>
+              </aside>
+            </div>
+          </form>
+          <dialog id="exercisePicker" aria-labelledby="pickerTitle">
+            <div class="picker-heading">
+              <div>
+                <h2 id="pickerTitle">Add exercises</h2>
+                <p id="pickerCount" class="hint"></p>
+              </div>
+              <button id="closePicker" class="text-button" type="button">
+                Close
+              </button>
+            </div>
+            <label class="search-label"
+              ><i data-lucide="search"></i
+              ><input
+                id="exerciseSearch"
+                type="search"
+                placeholder="Search exercises, muscles or equipment"
+                autocomplete="off"
+            /></label>
+            <div class="fields">
+              <label
+                >Muscle group<select id="exerciseMuscle">
+                  <option value="">All muscles</option>
+                </select></label
+              ><label
+                >Equipment<select id="exerciseEquipment">
+                  <option value="">All equipment</option>
+                </select></label
+              >
+            </div>
+            <div id="exerciseResults" class="exercise-results"></div>
+            <div class="picker-footer">
+              <span id="pickerSelection" class="hint"
+                >Choose one or more exercises</span
+              ><button
+                id="addSelectedExercises"
+                type="button"
+                class="primary"
+                disabled
+              >
+                Add selected
+              </button>
+            </div>
+          </dialog>
+        </section>
+        <section data-page="dashboard" hidden>
+          <div id="stats" class="stats"></div>
+          <div class="card">
+            <h2>Weekly consistency</h2>
+            <p id="adherence"></p>
+            <p id="streak" class="hint"></p>
           </div>
-        </form>
-        <p id="status" role="status"></p>
-      </section>
-      <section class="workout-panel">
-        <h2>Training history</h2>
-        <label>Filter by exercise<input id="filter" type="search" placeholder="Search exercise names"></label>
-        <p id="empty"></p>
-        <ul id="workoutList"></ul>
-      </section>
+          <div class="two-column">
+            <div class="card">
+              <h2>Working sets this week</h2>
+              <div id="muscleChart"></div>
+            </div>
+            <div class="card">
+              <h2>Training calendar</h2>
+              <div id="calendar"></div>
+              <p class="hint">
+                Highlighted days have recorded workouts. Rest days are part of
+                training.
+              </p>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Personal records</h2>
+            <div id="records"></div>
+            <p class="hint">
+              Estimated 1RM uses working sets of 10 reps or fewer. It is an
+              estimate, not a target for a maximal attempt.
+            </p>
+          </div>
+        </section>
+        <section data-page="history" hidden>
+          <label
+            >Search sessions<input
+              id="historySearch"
+              type="search"
+              placeholder="Workout or exercise name"
+          /></label>
+          <div id="historyList" class="stack"></div>
+        </section>
+        <section data-page="library" hidden>
+          <label
+            >Search exercises<input
+              id="librarySearch"
+              type="search"
+              placeholder="Name, muscle, or equipment"
+          /></label>
+          <div id="libraryList" class="library-grid"></div>
+        </section>
+        <section data-page="progress" hidden>
+          <div class="card">
+            <label>Exercise<select id="progressSelect"></select></label>
+            <h2>Estimated strength over time</h2>
+            <div id="strengthChart"></div>
+            <div id="progressTable"></div>
+            <p class="hint">
+              Only recorded working sets contribute. Estimates use loaded sets
+              of 10 reps or fewer.
+            </p>
+          </div>
+        </section>
+        <section data-page="plans" hidden>
+          <div class="card">
+            <h2>Build a workout plan</h2>
+            <p class="muted">
+              Uses your equipment, schedule, experience, and split from
+              Settings. Review every exercise before saving.
+            </p>
+            <div class="actions">
+              <button id="generatePlan" class="primary">
+                Generate draft plan</button
+              ><a class="secondary button" href="#settings"
+                >Edit training profile</a
+              ><button id="customPlan" class="secondary">
+                Create custom routine
+              </button>
+            </div>
+            <p id="planSource" class="hint"></p>
+            <div id="planEditor"></div>
+          </div>
+          <h2 class="section-title">Saved routines</h2>
+          <div id="planList" class="stack"></div>
+        </section>
+        <section data-page="coach" hidden>
+          <div class="card">
+            <h2>Review your training</h2>
+            <p class="muted">
+              Questions use your recorded training data. AI interpretations are
+              labeled separately and never change your saved records.
+            </p>
+            <form id="coachForm">
+              <label
+                >Your question<textarea
+                  id="coachQuestion"
+                  maxlength="1000"
+                  required
+                  placeholder="What should I focus on next week?"
+                  rows="3"
+                ></textarea>
+              </label>
+              <div class="actions">
+                <button type="submit" class="primary">Ask coach</button
+                ><button id="weeklyReview" type="button" class="secondary">
+                  Review this week
+                </button>
+              </div>
+            </form>
+          </div>
+          <div id="coachAnswers" class="stack"></div>
+        </section>
+        <section data-page="body" hidden>
+          <div class="two-column">
+            <form id="bodyForm" class="card">
+              <h2>Record a measurement</h2>
+              <label>Date<input name="date" type="date" required /></label
+              ><label
+                >Bodyweight (kg)<input
+                  name="weight"
+                  type="number"
+                  min="20"
+                  max="500"
+                  step=".1"
+                  required /></label
+              ><label
+                >Waist (cm, optional)<input
+                  name="waist"
+                  type="number"
+                  min="20"
+                  max="300"
+                  step=".1" /></label
+              ><label
+                >Notes<textarea name="notes" maxlength="300"></textarea></label
+              ><button class="primary">Save measurement</button>
+            </form>
+            <div class="card">
+              <h2>Bodyweight trend</h2>
+              <div id="bodyChart"></div>
+              <div id="bodyHistory"></div>
+            </div>
+          </div>
+        </section>
+        <section data-page="goals" hidden>
+          <form id="goalForm" class="card">
+            <h2>Set a measurable goal</h2>
+            <div class="fields">
+              <label
+                >Goal type<select name="kind" id="goalKind">
+                  <option value="strength">Strength (kg)</option>
+                  <option value="bodyweight">Bodyweight (kg)</option>
+                  <option value="frequency">Training days per week</option>
+                </select></label
+              ><label id="goalExerciseLabel"
+                >Exercise<select name="exerciseId" id="goalExercise"></select
+              ></label>
+            </div>
+            <div class="fields">
+              <label
+                >Target<input
+                  name="target"
+                  type="number"
+                  min=".1"
+                  max="1500"
+                  step=".1"
+                  required /></label
+              ><label
+                >Target date (optional)<input name="deadline" type="date"
+              /></label>
+            </div>
+            <button class="primary">Save goal</button>
+          </form>
+          <div id="goalList" class="library-grid"></div>
+        </section>
+        <section data-page="settings" hidden>
+          <form id="profileForm" class="card">
+            <h2>Your training profile</h2>
+            <div class="fields">
+              <label
+                >Goal<select name="goal">
+                  <option value="general">General fitness</option>
+                  <option value="strength">Strength</option>
+                  <option value="muscle">Build muscle</option>
+                </select></label
+              ><label
+                >Experience<select name="experience">
+                  <option>beginner</option>
+                  <option>intermediate</option>
+                  <option>advanced</option>
+                </select></label
+              ><label
+                >Age (optional)<input
+                  name="age"
+                  type="number"
+                  min="13"
+                  max="100" /></label
+              ><label
+                >Days per week<input
+                  name="frequency"
+                  type="number"
+                  min="1"
+                  max="6" /></label
+              ><label
+                >Minutes per session<input
+                  name="duration"
+                  type="number"
+                  min="15"
+                  max="120" /></label
+              ><label
+                >Preferred split<select name="split">
+                  <option>Full Body</option>
+                  <option>Upper/Lower</option>
+                  <option>Push/Pull/Legs</option>
+                  <option>Custom</option>
+                </select></label
+              >
+            </div>
+            <fieldset>
+              <legend>Available equipment</legend>
+              <div id="equipmentOptions" class="checks"></div>
+            </fieldset>
+            <label
+              >Target muscles (comma separated)<input
+                name="muscles"
+                placeholder="chest, back, quads" /></label
+            ><label
+              >Exercise preferences<textarea
+                name="preferences"
+                maxlength="500"
+              ></textarea></label
+            ><label
+              >Injuries or limitations<textarea
+                name="limitations"
+                maxlength="500"
+              ></textarea></label
+            ><label
+              >Recovery information<textarea
+                name="recovery"
+                maxlength="500"
+                placeholder="Sleep, fatigue, or scheduling constraints"
+              ></textarea></label
+            ><label class="check"
+              ><input type="checkbox" name="aiConsent" />Allow sending relevant
+              training summaries and these coaching details to xAI when I ask
+              the coach.</label
+            >
+            <p class="hint">
+              AI requires server configuration. General training guidance cannot
+              diagnose or treat injuries.
+            </p>
+            <button class="primary">Save profile</button>
+          </form>
+          <div class="card">
+            <h2>Import earlier workout history</h2>
+            <p class="muted">
+              Import the old tracker data from this browser, or choose a JSON
+              export from its original address. Review the entries before
+              confirming.
+            </p>
+            <div class="actions">
+              <button id="importLocal" class="secondary">
+                Review browser history</button
+              ><label class="file-label"
+                >Choose JSON file<input
+                  id="importFile"
+                  type="file"
+                  accept=".json,application/json"
+              /></label>
+            </div>
+            <div id="importPreview"></div>
+          </div>
+        </section>
+      </main>
     </div>
-  <section class="progress-panel">
-
-<h2>Exercise progress</h2>
-<p class="hint">Compare your latest two dated sessions. Use your notes to track technique and effort alongside weight and reps.</p>
-<label>Exercise<select id="progressExercise"><option value="">Choose an exercise</option></select></label>
-<p id="progressSummary" aria-live="polite">Log dated sets to start tracking progress.</p>
-</section>
-
-</main>
-</body>
+  </body>
 </html>
