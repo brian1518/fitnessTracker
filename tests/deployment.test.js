@@ -99,6 +99,7 @@ test("Pages package includes only public assets and works at a repository subpat
     assert.deepEqual(files, [
       ".nojekyll",
       "css/app.css",
+      "favicon.svg",
       "index.html",
       "js/config.js",
       "js/fitness.js",
@@ -106,7 +107,9 @@ test("Pages package includes only public assets and works at a repository subpat
       "vendor/lucide.js",
     ]);
     const html = fs.readFileSync(path.join(dir, "index.html"), "utf8");
-    assert.doesNotMatch(html, /(?:src|href)="\/(?:js|css|vendor)\//);
+    assert.doesNotMatch(html, /(?:src|href)="\/(?!\/)/);
+    assert.match(html, /id="homeView"/);
+    assert.match(html, /id="authForm"/);
     const config = fs.readFileSync(path.join(dir, "js/config.js"), "utf8");
     assert.match(config, /"demoEnabled":false/);
     assert.match(config, /lantern-test.onrender.com/);

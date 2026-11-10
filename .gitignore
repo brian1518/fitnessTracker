@@ -11,3 +11,4 @@ playwright-report/
 .fitness-db.lock
 
 dist-pages/
+.claude/
