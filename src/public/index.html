@@ -2,9 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#09150f" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a120d" />
+    <meta
+      name="description"
+      content="Lantern Training is a strength-training journal. Log every set, see your previous performance, and know your next target."
+    />
     <title>Lantern Training</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./css/app.css" />
     <script src="./js/config.js" defer></script>
     <script src="./vendor/lucide.js" defer></script>
@@ -12,26 +20,225 @@
     <script src="./js/fitness.js" defer></script>
   </head>
   <body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <symbol id="lanternMark" viewBox="0 0 32 32">
+        <rect width="32" height="32" rx="8" fill="currentColor" />
+        <path
+          class="mark-ink"
+          d="M12 9.5a4 4 0 0 1 8 0M10.5 12h11M12 12v9.5M20 12v9.5M10.5 21.5h11M16 15v3.5"
+          fill="none"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+    </svg>
     <div id="notice" role="status" aria-live="polite"></div>
-    <section id="authView" class="auth-layout">
-      <div class="auth-intro">
-        <div class="brand">
-          <span class="lantern" aria-hidden="true"></span>Lantern Training
+
+    <!-- Public introduction -->
+    <div id="homeView" class="home">
+      <header class="home-header">
+        <a class="brand" href="#"
+          ><svg class="mark" aria-hidden="true"><use href="#lanternMark" /></svg
+          >Lantern Training</a
+        >
+        <div class="home-header-actions">
+          <a class="text-link" href="#signin">Sign in</a>
+          <a class="button primary" href="#signup">Start tracking</a>
         </div>
-        <h1>A stronger session starts here.</h1>
-        <p>
-          Remember your last workout. Know your next target. Build progress you
-          can see.
-        </p>
-        <div class="intro-details">
-          <p>Record every working set</p>
-          <p>Progress at your own pace</p>
-          <p>Keep your training in one place</p>
-        </div>
-      </div>
-      <form id="authForm" class="card">
-        <h2 id="authTitle">Welcome back</h2>
-        <p class="muted">Your personal workout journal.</p>
+      </header>
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <h1>Track every set. Know your next target.</h1>
+            <p class="lead">
+              Log your workouts, follow your progress, and plan your next
+              session in one place.
+            </p>
+            <div class="actions">
+              <a class="button primary large" href="#signup">Start tracking</a>
+              <button id="homeDemo" class="secondary large" type="button">
+                Explore demo
+              </button>
+            </div>
+            <p class="hint">
+              No payment details. Weights are logged in kilograms.
+            </p>
+          </div>
+          <figure class="preview">
+            <div class="preview-frame" aria-hidden="true" inert>
+              <div class="preview-bar">
+                <span class="preview-title">Upper body</span>
+                <span class="session-metrics"
+                  ><span>2 / 3 sets done</span
+                  ><span>1,000 kg volume</span></span
+                >
+              </div>
+              <div class="card workout-exercise">
+                <div class="exercise-card-heading">
+                  <div>
+                    <h3>Bench Press</h3>
+                    <p class="hint">chest · barbell</p>
+                  </div>
+                </div>
+                <div class="next-target">
+                  <div>
+                    <span class="target-label">Suggested target</span>
+                    <p><strong>62.5 kg · 3 × 8</strong></p>
+                  </div>
+                  <span class="button secondary small">Use target</span>
+                  <p class="hint target-reason">
+                    Every working set reached the top of your rep range last
+                    time, so the load goes up by one increment.
+                  </p>
+                </div>
+                <table class="set-grid">
+                  <thead>
+                    <tr>
+                      <th>Set</th>
+                      <th>Previous</th>
+                      <th>kg</th>
+                      <th>Reps</th>
+                      <th><i data-lucide="check"></i></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="set-complete">
+                      <td><span class="set-number">1</span></td>
+                      <td class="previous-value">60 kg × 12</td>
+                      <td><span class="fake-input">62.5</span></td>
+                      <td><span class="fake-input">8</span></td>
+                      <td>
+                        <span class="complete-set"
+                          ><i data-lucide="check"></i
+                        ></span>
+                      </td>
+                    </tr>
+                    <tr class="set-complete">
+                      <td><span class="set-number">2</span></td>
+                      <td class="previous-value">60 kg × 12</td>
+                      <td><span class="fake-input">62.5</span></td>
+                      <td><span class="fake-input">8</span></td>
+                      <td>
+                        <span class="complete-set"
+                          ><i data-lucide="check"></i
+                        ></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><span class="set-number">3</span></td>
+                      <td class="previous-value">60 kg × 12</td>
+                      <td><span class="fake-input placeholder">60</span></td>
+                      <td><span class="fake-input placeholder">12</span></td>
+                      <td>
+                        <span class="complete-set"
+                          ><i data-lucide="check"></i
+                        ></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="preview-rest">
+                <span class="timer">01:32</span>
+                <span class="hint">Bench Press · rest running</span>
+              </div>
+            </div>
+            <figcaption>
+              The workout logger, shown with sample data: last session beside
+              today's sets, a suggested target with its reason, and the rest
+              timer.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="home-section" aria-labelledby="featuresTitle">
+          <h2 id="featuresTitle">What it does</h2>
+          <div class="feature-grid">
+            <article>
+              <i data-lucide="dumbbell"></i>
+              <h3>Log the session</h3>
+              <p>
+                Add exercises from a library of 181 movements or start a saved
+                routine. Your previous weight and reps sit beside each set, and
+                the rest timer starts when you check one off.
+              </p>
+            </article>
+            <article>
+              <i data-lucide="chart-no-axes-combined"></i>
+              <h3>See what changed</h3>
+              <p>
+                Weekly consistency, per-lift history, personal records, body
+                measurements and goals. Estimates such as one-rep max are
+                labelled as estimates.
+              </p>
+            </article>
+            <article>
+              <i data-lucide="messages-square"></i>
+              <h3>Know why a target is suggested</h3>
+              <p>
+                Next targets come from built-in progression rules and always
+                show their reason. AI interpretation is optional, off by
+                default, and only runs where the server has it configured and
+                you have agreed to it.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="home-section" aria-labelledby="trustTitle">
+          <h2 id="trustTitle">Good to know</h2>
+          <dl class="fact-list">
+            <div>
+              <dt>Your data</dt>
+              <dd>
+                Export everything as a file or delete your account from Profile.
+                No advertising or tracking scripts.
+                <a href="#privacy">Read the privacy summary</a>.
+              </dd>
+            </div>
+            <div>
+              <dt>Saving</dt>
+              <dd>
+                A workout in progress is kept on your device until you finish
+                it, then saved to your account.
+              </dd>
+            </div>
+            <div>
+              <dt>Limits</dt>
+              <dd>
+                Kilograms and centimetres only. Password reset by email is not
+                available yet. This is an independent project on trial hosting,
+                so the first request after a quiet period can take up to a
+                minute.
+              </dd>
+            </div>
+          </dl>
+          <div class="actions">
+            <a class="button primary" href="#signup">Start tracking</a>
+            <a class="text-link" href="#signin">I already have an account</a>
+          </div>
+        </section>
+      </main>
+      <footer class="home-footer">
+        <span>Lantern Training</span>
+        <nav aria-label="Footer">
+          <a href="#privacy">Privacy</a>
+          <a href="#help">Help</a>
+          <a href="#signin">Sign in</a>
+        </nav>
+      </footer>
+    </div>
+
+    <!-- Sign in and account creation -->
+    <section id="authView" class="auth" hidden>
+      <a class="brand" href="#"
+        ><svg class="mark" aria-hidden="true"><use href="#lanternMark" /></svg
+        >Lantern Training</a
+      >
+      <form id="authForm" class="card auth-card">
+        <h1 id="authTitle">Sign in</h1>
+        <p class="muted" id="authLead">Welcome back to your training log.</p>
         <label id="nameLabel" hidden
           >Name<input id="authName" autocomplete="name" maxlength="80"
         /></label>
@@ -40,78 +247,285 @@
             id="authEmail"
             type="email"
             autocomplete="email"
+            inputmode="email"
+            autocapitalize="none"
+            spellcheck="false"
             maxlength="254"
             required
         /></label>
-        <label
-          >Password<input
+        <label for="authPassword">Password</label>
+        <div class="password-field">
+          <input
             id="authPassword"
             type="password"
             autocomplete="current-password"
-            minlength="12"
             maxlength="128"
             required
-          /><small>At least 12 characters.</small></label
-        >
-        <button class="primary wide" type="submit" id="authSubmit">
+            aria-describedby="passwordHint"
+          />
+          <button
+            id="togglePassword"
+            type="button"
+            class="text-button"
+            aria-pressed="false"
+            aria-label="Show password"
+          >
+            Show
+          </button>
+        </div>
+        <small id="passwordHint" hidden>At least 12 characters.</small>
+        <p id="authError" role="alert"></p>
+        <button class="primary wide large" type="submit" id="authSubmit">
           Sign in
         </button>
+        <p id="authWait" class="hint" role="status"></p>
         <button class="text-button wide" id="authToggle" type="button">
           Create an account
         </button>
-        <button id="demoLogin" class="secondary wide" type="button">
-          Explore demo workouts
-        </button>
-        <p class="hint">
-          Sample workouts and progress in a separate demo account.
+        <div id="demoBlock" class="demo-block">
+          <button id="demoLogin" class="secondary wide" type="button">
+            Explore demo workouts
+          </button>
+          <p class="hint">
+            Sample workouts and progress in a separate demo account.
+          </p>
+        </div>
+        <p id="recoveryNote" class="hint">
+          Password reset by email is not available yet.
+          <a href="#help">See Help</a> if you are locked out.
         </p>
-        <p id="authError" role="alert"></p>
       </form>
+      <p class="hint auth-footer">
+        <a href="#">About Lantern Training</a> ·
+        <a href="#privacy">Privacy</a>
+      </p>
     </section>
+
+    <!-- Privacy and help -->
+    <section id="legalView" class="legal" hidden>
+      <a class="brand" href="#"
+        ><svg class="mark" aria-hidden="true"><use href="#lanternMark" /></svg
+        >Lantern Training</a
+      >
+      <article class="card prose">
+        <p><a class="text-link" href="#" id="legalBack">← Back</a></p>
+        <h1 id="privacy-title">Privacy summary</h1>
+        <p class="muted">
+          A plain description of what this application stores and where. It is
+          not a legal certification.
+        </p>
+        <h2>What is stored in your account</h2>
+        <ul>
+          <li>
+            Your name and email address, and a salted hash of your password.
+          </li>
+          <li>
+            Workouts, sets, routines, body measurements, goals, your training
+            profile, and saved coach answers.
+          </li>
+          <li>
+            Session records used to keep you signed in. They expire after seven
+            days and are removed when you sign out.
+          </li>
+        </ul>
+        <p>
+          Account data is kept in the application's database on its hosting
+          provider. Only your own signed-in account can read it through the
+          application.
+        </p>
+        <h2>What stays on your device</h2>
+        <ul>
+          <li>
+            A workout in progress is kept in this browser's storage until you
+            finish or discard it. It is not in your account until you finish.
+          </li>
+          <li>
+            On the public website, a sign-in token is kept for the current
+            browser tab.
+          </li>
+        </ul>
+        <h2>AI coach</h2>
+        <p>
+          AI interpretation is off unless the server operator has enabled it and
+          you have turned on consent in Profile. When both are true and you ask
+          the coach or generate a routine, a summary of your recent training and
+          the coaching details in your profile are sent to xAI to produce the
+          answer. Your name and email are not included. When AI is not used,
+          answers come from built-in rules and are labelled that way.
+        </p>
+        <h2>What is not done</h2>
+        <p>
+          The application loads no advertising, analytics, or third-party
+          tracking scripts.
+        </p>
+        <h2>Your controls</h2>
+        <ul>
+          <li>
+            <strong>Export:</strong> Profile → Account → Export my data
+            downloads everything in your account as a JSON file.
+          </li>
+          <li>
+            <strong>Delete:</strong> Profile → Account → Delete account
+            permanently removes your account and all records linked to it.
+          </li>
+          <li>
+            <strong>AI consent:</strong> Profile → AI coach. You can withdraw it
+            at any time.
+          </li>
+        </ul>
+        <h1 id="help-title">Help</h1>
+        <h2>How saving works</h2>
+        <p>
+          While you log, your workout is a draft on this device. Selecting
+          Finish workout saves the sets you have checked off to your account;
+          unchecked sets are left out, and you are asked before that happens.
+        </p>
+        <h2>Units</h2>
+        <p>Weights are in kilograms and body measurements in centimetres.</p>
+        <h2>Forgotten password</h2>
+        <p>
+          Password reset by email is not available yet because the application
+          does not send email. If you are locked out, use the contact link
+          below.
+        </p>
+        <h2>Slow first load</h2>
+        <p>
+          The server sleeps when idle. The first request afterwards can take up
+          to a minute. This deployment runs on trial hosting, so export your
+          data from time to time.
+        </p>
+        <h2>Training guidance</h2>
+        <p>
+          Suggestions are general training guidance. They are not medical advice
+          and cannot diagnose or treat pain or injury.
+        </p>
+        <h2>Contact</h2>
+        <p>
+          Report a problem or ask a question on the
+          <a
+            href="https://github.com/brian1518/fitnessTracker/issues"
+            rel="noopener noreferrer"
+            target="_blank"
+            >project's issue tracker (opens GitHub)</a
+          >. Do not post passwords or personal details there.
+        </p>
+      </article>
+    </section>
+
+    <!-- Application -->
     <div id="appView" hidden>
       <aside class="sidebar">
         <a class="brand" href="#today"
-          ><span class="lantern" aria-hidden="true"></span>Lantern Training</a
+          ><svg class="mark" aria-hidden="true"><use href="#lanternMark" /></svg
+          >Lantern Training</a
         >
-        <nav aria-label="Main navigation" id="navigation">
-          <a href="#today"><i data-lucide="dumbbell"></i>Today's workout</a>
-          <a href="#dashboard"
-            ><i data-lucide="layout-dashboard"></i>Dashboard</a
+        <nav aria-label="Main navigation" id="navigation" class="main-nav">
+          <a href="#today" data-group="today"
+            ><i data-lucide="dumbbell"></i><span>Today</span></a
           >
-          <a href="#history"><i data-lucide="history"></i>Workout history</a>
-          <a href="#library"><i data-lucide="search"></i>Exercise library</a>
-          <a href="#progress"
-            ><i data-lucide="chart-no-axes-combined"></i>Exercise progress</a
+          <a href="#plans" data-group="routines"
+            ><i data-lucide="calendar-days"></i><span>Routines</span></a
           >
-          <a href="#plans"><i data-lucide="calendar-days"></i>Workout plans</a>
-          <a href="#coach"
-            ><i data-lucide="messages-square"></i>Fitness coach</a
+          <a href="#dashboard" data-group="progress"
+            ><i data-lucide="chart-no-axes-combined"></i
+            ><span>Progress</span></a
           >
-          <a href="#body"><i data-lucide="scale"></i>Body progress</a>
-          <a href="#goals"><i data-lucide="target"></i>Goals</a>
-          <a href="#settings"><i data-lucide="settings-2"></i>Settings</a>
+          <a href="#coach" data-group="coach"
+            ><i data-lucide="messages-square"></i><span>Coach</span></a
+          >
+          <a href="#settings" data-group="profile"
+            ><i data-lucide="user-round"></i><span>Profile</span></a
+          >
         </nav>
         <div class="account">
           <span id="accountName"></span
-          ><button id="logout" class="secondary">Sign out</button>
+          ><button id="logout" class="secondary" type="button">Sign out</button>
         </div>
       </aside>
       <main id="main" tabindex="-1">
         <div id="demoBanner" class="demo-banner" hidden>
-          Demo workspace · All history and measurements here are sample data.
-          Sign out to return to your account.
+          Demo workspace. All history and measurements here are sample data.
+          Sign out to return to your own account.
         </div>
         <header class="page-header">
-          <div>
-            <p class="eyebrow" id="pageEyebrow">YOUR TRAINING JOURNAL</p>
-            <h1 id="pageTitle">Today's workout</h1>
-          </div>
+          <h1 id="pageTitle">Today</h1>
           <span id="currentDate" class="muted"></span>
         </header>
+        <nav
+          class="subnav"
+          id="subnav-routines"
+          aria-label="Routines sections"
+          hidden
+        >
+          <a href="#plans">Routines</a>
+          <a href="#library">Exercise library</a>
+        </nav>
+        <nav
+          class="subnav"
+          id="subnav-progress"
+          aria-label="Progress sections"
+          hidden
+        >
+          <a href="#dashboard">Overview</a>
+          <a href="#history">History</a>
+          <a href="#progress">Lifts</a>
+          <a href="#body">Body</a>
+          <a href="#goals">Goals</a>
+        </nav>
+
+        <section data-page="welcome" hidden>
+          <form id="onboardForm" class="card narrow">
+            <h2>Set up your training</h2>
+            <p class="muted">
+              Four optional answers. They set your weekly consistency target and
+              shape routine drafts. You can change them later in Profile.
+            </p>
+            <div class="fields">
+              <label
+                >Main goal<select name="goal">
+                  <option value="general">General fitness</option>
+                  <option value="strength">Strength</option>
+                  <option value="muscle">Build muscle</option>
+                </select></label
+              ><label
+                >Experience<select name="experience">
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select></label
+              >
+            </div>
+            <label
+              >Training days per week<input
+                name="frequency"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                max="6"
+                value="3"
+                required
+            /></label>
+            <fieldset>
+              <legend>Equipment you can use</legend>
+              <div id="onboardEquipment" class="checks"></div>
+            </fieldset>
+            <p class="hint">
+              Weights are logged in kilograms. The AI coach is optional and
+              stays off unless you turn it on in Profile.
+            </p>
+            <div class="actions">
+              <button class="primary" type="submit">
+                Save and start a workout
+              </button>
+              <a class="button text-button" href="#today">Skip for now</a>
+            </div>
+          </form>
+        </section>
+
         <section data-page="today">
           <form id="workoutForm" novalidate>
             <div class="session-toolbar card">
-              <div>
+              <div class="session-main">
                 <label class="sr-only" for="workoutName">Workout name</label
                 ><input
                   id="workoutName"
@@ -119,25 +533,30 @@
                   maxlength="100"
                   required
                   placeholder="Name your workout"
+                  autocomplete="off"
                 />
                 <div class="session-metrics">
                   <span id="sessionExerciseCount">0 exercises</span
                   ><span id="sessionSetCount">0 sets done</span
                   ><span id="sessionVolume">0 kg volume</span>
                 </div>
+                <p id="draftStatus" class="save-state" role="status"></p>
               </div>
               <div class="actions">
-                <button id="newWorkout" class="secondary" type="button">
-                  New</button
+                <button id="newWorkout" class="text-button" type="button">
+                  Discard</button
                 ><button id="saveWorkout" class="primary" type="submit">
                   Finish workout
                 </button>
               </div>
             </div>
             <div class="logger-layout">
-              <div>
-                <details class="card session-details">
-                  <summary>Session details &amp; recovery</summary>
+              <div class="logger-main">
+                <details class="session-details">
+                  <summary>
+                    <span>Session details</span
+                    ><span id="sessionDetailSummary" class="hint"></span>
+                  </summary>
                   <div class="fields">
                     <label
                       >Date<input
@@ -145,9 +564,10 @@
                         type="date"
                         required /></label
                     ><label
-                      >Fatigue (0–10)<input
+                      >Fatigue before training (0–10)<input
                         id="fatigue"
                         type="number"
+                        inputmode="numeric"
                         min="0"
                         max="10"
                         step="1"
@@ -163,9 +583,13 @@
                       id="sessionNotes"
                       maxlength="1000"
                       rows="2"
-                      placeholder="How are you feeling today?"
+                      placeholder="How did the session feel?"
                     ></textarea>
                   </label>
+                  <p class="hint">
+                    Fatigue and pain change the suggested targets: high fatigue
+                    suggests a lighter session, and pain pauses progression.
+                  </p>
                 </details>
                 <div id="exerciseCards" class="exercise-stack"></div>
                 <button
@@ -177,38 +601,43 @@
                 </button>
                 <p id="workoutError" role="alert"></p>
               </div>
-              <aside class="workout-sidebar">
-                <div class="card rest-card">
-                  <div class="section-heading">
+              <aside class="workout-sidebar" aria-label="Rest timer and help">
+                <div class="card rest-card" id="restCard">
+                  <div class="rest-readout">
                     <h2>Rest timer</h2>
-                    <i data-lucide="timer"></i>
+                    <p id="timer" class="timer" role="timer">02:00</p>
+                    <p id="timerStatus" class="hint" aria-live="polite">
+                      Starts when you complete a set.
+                    </p>
                   </div>
-                  <p id="timer" class="timer" role="timer">02:00</p>
-                  <p id="timerStatus" class="hint" aria-live="polite">
-                    Starts when you complete a set.
-                  </p>
                   <div class="actions">
                     <button id="startTimer" type="button" class="secondary">
-                      Start 2 min</button
+                      Start</button
+                    ><button
+                      id="addRest"
+                      type="button"
+                      class="secondary"
+                      aria-label="Add 30 seconds of rest"
+                    >
+                      +30 s</button
                     ><button id="stopTimer" type="button" class="text-button">
-                      Skip rest
+                      Skip
                     </button>
                   </div>
                 </div>
                 <div class="card logger-help">
-                  <h2>One set at a time</h2>
-                  <p class="hint">
-                    Enter your actual weight and reps, then check off each
-                    finished set.
-                  </p>
-                  <p class="hint">
-                    Previous values help you compare. Suggested targets are
-                    always editable.
-                  </p>
-                  <p class="hint">
-                    Only checked sets are saved when you finish.
-                  </p>
-                  <p id="draftStatus" class="hint" role="status"></p>
+                  <h2>How logging works</h2>
+                  <ul class="plain-list hint">
+                    <li>
+                      <strong>Previous</strong> is your last session. Leave a
+                      field empty and check the set to repeat it.
+                    </li>
+                    <li>
+                      <strong>Suggested target</strong> comes from built-in
+                      progression rules. It is always editable.
+                    </li>
+                    <li>Only checked sets are saved when you finish.</li>
+                  </ul>
                 </div>
               </aside>
             </div>
@@ -219,17 +648,24 @@
                 <h2 id="pickerTitle">Add exercises</h2>
                 <p id="pickerCount" class="hint"></p>
               </div>
-              <button id="closePicker" class="text-button" type="button">
-                Close
+              <button
+                id="closePicker"
+                class="icon-button"
+                type="button"
+                aria-label="Close"
+              >
+                <i data-lucide="x"></i>
               </button>
             </div>
             <label class="search-label"
+              ><span class="sr-only">Search exercises</span
               ><i data-lucide="search"></i
               ><input
                 id="exerciseSearch"
                 type="search"
-                placeholder="Search exercises, muscles or equipment"
+                placeholder="Search by name, muscle or equipment"
                 autocomplete="off"
+                enterkeyhint="search"
             /></label>
             <div class="fields">
               <label
@@ -244,7 +680,7 @@
             </div>
             <div id="exerciseResults" class="exercise-results"></div>
             <div class="picker-footer">
-              <span id="pickerSelection" class="hint"
+              <span id="pickerSelection" class="hint" aria-live="polite"
                 >Choose one or more exercises</span
               ><button
                 id="addSelectedExercises"
@@ -257,36 +693,63 @@
             </div>
           </dialog>
         </section>
+
         <section data-page="dashboard" hidden>
           <div id="stats" class="stats"></div>
           <div class="card">
-            <h2>Weekly consistency</h2>
-            <p id="adherence"></p>
+            <div class="section-heading">
+              <h2>Am I training consistently?</h2>
+              <span class="hint">Weeks start on Monday</span>
+            </div>
+            <p id="adherence" class="headline-fact"></p>
+            <div id="weekChart"></div>
             <p id="streak" class="hint"></p>
           </div>
           <div class="two-column">
             <div class="card">
-              <h2>Working sets this week</h2>
+              <h2>Which lifts are improving?</h2>
+              <div id="liftTrends"></div>
+              <p class="hint">
+                Estimated 1RM is calculated from your working sets of 10 reps or
+                fewer (Epley formula). It is an estimate, not a tested maximum.
+              </p>
+            </div>
+            <div class="card">
+              <h2>What should I focus on next?</h2>
+              <ul id="focusList" class="focus-list"></ul>
+              <p class="hint">
+                From built-in rules applied to your recorded workouts. Not
+                generated by AI.
+              </p>
+            </div>
+          </div>
+          <div class="two-column">
+            <div class="card">
+              <div class="section-heading">
+                <h2>Working sets by muscle</h2>
+                <span class="hint">This week</span>
+              </div>
               <div id="muscleChart"></div>
             </div>
             <div class="card">
               <h2>Training calendar</h2>
               <div id="calendar"></div>
-              <p class="hint">
-                Highlighted days have recorded workouts. Rest days are part of
-                training.
-              </p>
+              <p class="hint">Marked days have a recorded workout.</p>
             </div>
           </div>
           <div class="card">
-            <h2>Personal records</h2>
-            <div id="records"></div>
+            <div class="section-heading">
+              <h2>Personal records</h2>
+              <span class="hint">All time</span>
+            </div>
+            <div id="records" class="record-grid"></div>
             <p class="hint">
-              Estimated 1RM uses working sets of 10 reps or fewer. It is an
-              estimate, not a target for a maximal attempt.
+              Heaviest load is measured from your logged working sets. Estimated
+              1RM is a calculation.
             </p>
           </div>
         </section>
+
         <section data-page="history" hidden>
           <label
             >Search sessions<input
@@ -294,58 +757,122 @@
               type="search"
               placeholder="Workout or exercise name"
           /></label>
+          <p id="historyCount" class="hint"></p>
           <div id="historyList" class="stack"></div>
+          <button id="historyMore" class="secondary" type="button" hidden>
+            Show older workouts
+          </button>
         </section>
+
         <section data-page="library" hidden>
-          <label
-            >Search exercises<input
-              id="librarySearch"
-              type="search"
-              placeholder="Name, muscle, or equipment"
-          /></label>
-          <div id="libraryList" class="library-grid"></div>
+          <div class="fields library-filters">
+            <label
+              >Search exercises<input
+                id="librarySearch"
+                type="search"
+                placeholder="Name, muscle, or equipment"
+            /></label>
+            <label
+              >Muscle group<select id="libraryMuscle">
+                <option value="">All muscles</option>
+              </select></label
+            >
+          </div>
+          <details class="card" id="customExerciseBox">
+            <summary>Add a custom exercise</summary>
+            <form id="customExerciseForm">
+              <p class="hint">
+                Custom exercises are private to your account and work everywhere
+                built-in exercises do.
+              </p>
+              <label
+                >Name<input name="name" minlength="2" maxlength="80" required
+              /></label>
+              <div class="fields">
+                <label
+                  >Main muscle<select name="muscle" required>
+                    <option>chest</option>
+                    <option>back</option>
+                    <option>shoulders</option>
+                    <option>biceps</option>
+                    <option>triceps</option>
+                    <option>quads</option>
+                    <option>hamstrings</option>
+                    <option>glutes</option>
+                    <option>calves</option>
+                    <option>core</option>
+                  </select></label
+                ><label
+                  >Equipment<select name="equipment" required>
+                    <option value="barbell">Barbell</option>
+                    <option value="dumbbell">Dumbbell</option>
+                    <option value="machine">Machine</option>
+                    <option value="cable">Cable</option>
+                    <option value="bodyweight">Bodyweight</option>
+                    <option value="pullup-bar">Pull-up bar</option>
+                    <option value="dip-bars">Dip bars</option>
+                    <option value="other">Other</option>
+                  </select></label
+                >
+              </div>
+              <button class="primary" type="submit">Save exercise</button>
+            </form>
+          </details>
+          <p id="libraryCount" class="hint"></p>
+          <div id="libraryList" class="library-list"></div>
         </section>
+
         <section data-page="progress" hidden>
           <div class="card">
-            <label>Exercise<select id="progressSelect"></select></label>
-            <h2>Estimated strength over time</h2>
+            <div class="fields">
+              <label>Exercise<select id="progressSelect"></select></label>
+              <label
+                >Date range<select id="progressRange">
+                  <option value="90">Last 3 months</option>
+                  <option value="365">Last 12 months</option>
+                  <option value="0" selected>All time</option>
+                </select></label
+              >
+            </div>
+            <h2>Estimated 1RM over time</h2>
+            <p id="progressSummary" class="headline-fact"></p>
             <div id="strengthChart"></div>
+            <h3>Recorded sessions</h3>
             <div id="progressTable"></div>
             <p class="hint">
-              Only recorded working sets contribute. Estimates use loaded sets
-              of 10 reps or fewer.
+              Working sets and volume are measured from what you logged.
+              Estimated 1RM is calculated from sets of 10 reps or fewer and is
+              not a tested maximum. Volume is weight × reps; it describes
+              workload, not fitness.
             </p>
           </div>
         </section>
+
         <section data-page="plans" hidden>
+          <h2 class="section-title first">Saved routines</h2>
+          <div id="planList" class="stack"></div>
           <div class="card">
-            <h2>Build a workout plan</h2>
+            <h2>Create a routine</h2>
             <p class="muted">
-              Uses your equipment, schedule, experience, and split from
-              Settings. Review every exercise before saving.
+              A draft uses the equipment, schedule, experience and split in your
+              profile. Review every exercise before saving.
             </p>
             <div class="actions">
-              <button id="generatePlan" class="primary">
+              <button id="generatePlan" class="primary" type="button">
                 Generate draft plan</button
-              ><a class="secondary button" href="#settings"
-                >Edit training profile</a
-              ><button id="customPlan" class="secondary">
-                Create custom routine
-              </button>
+              ><button id="customPlan" class="secondary" type="button">
+                Create custom routine</button
+              ><a class="text-link" href="#settings">Edit training profile</a>
             </div>
-            <p id="planSource" class="hint"></p>
+            <p id="planSource" class="hint" role="status"></p>
             <div id="planEditor"></div>
           </div>
-          <h2 class="section-title">Saved routines</h2>
-          <div id="planList" class="stack"></div>
         </section>
+
         <section data-page="coach" hidden>
+          <div id="coachStatus" class="coach-status" role="status"></div>
           <div class="card">
-            <h2>Review your training</h2>
-            <p class="muted">
-              Questions use your recorded training data. AI interpretations are
-              labeled separately and never change your saved records.
-            </p>
+            <h2>Ask about your training</h2>
             <form id="coachForm">
               <label
                 >Your question<textarea
@@ -363,9 +890,16 @@
                 </button>
               </div>
             </form>
+            <p class="hint">
+              Each answer separates what you recorded from how it is
+              interpreted, and says whether it came from xAI or from built-in
+              rules. Answers never change your saved records. This is general
+              training guidance, not medical advice.
+            </p>
           </div>
           <div id="coachAnswers" class="stack"></div>
         </section>
+
         <section data-page="body" hidden>
           <div class="two-column">
             <form id="bodyForm" class="card">
@@ -375,6 +909,7 @@
                 >Bodyweight (kg)<input
                   name="weight"
                   type="number"
+                  inputmode="decimal"
                   min="20"
                   max="500"
                   step=".1"
@@ -383,21 +918,28 @@
                 >Waist (cm, optional)<input
                   name="waist"
                   type="number"
+                  inputmode="decimal"
                   min="20"
                   max="300"
                   step=".1" /></label
               ><label
-                >Notes<textarea name="notes" maxlength="300"></textarea></label
+                >Notes (optional)<textarea
+                  name="notes"
+                  maxlength="300"
+                ></textarea></label
               ><button class="primary">Save measurement</button>
             </form>
             <div class="card">
               <h2>Bodyweight trend</h2>
+              <p id="bodySummary" class="headline-fact"></p>
               <div id="bodyChart"></div>
               <div id="bodyHistory"></div>
             </div>
           </div>
         </section>
+
         <section data-page="goals" hidden>
+          <div id="goalList" class="library-grid"></div>
           <form id="goalForm" class="card">
             <h2>Set a measurable goal</h2>
             <div class="fields">
@@ -416,6 +958,7 @@
                 >Target<input
                   name="target"
                   type="number"
+                  inputmode="decimal"
                   min=".1"
                   max="1500"
                   step=".1"
@@ -426,11 +969,14 @@
             </div>
             <button class="primary">Save goal</button>
           </form>
-          <div id="goalList" class="library-grid"></div>
         </section>
+
         <section data-page="settings" hidden>
           <form id="profileForm" class="card">
-            <h2>Your training profile</h2>
+            <h2>Training profile</h2>
+            <p class="muted">
+              Used for your weekly consistency target and routine drafts.
+            </p>
             <div class="fields">
               <label
                 >Goal<select name="goal">
@@ -440,28 +986,26 @@
                 </select></label
               ><label
                 >Experience<select name="experience">
-                  <option>beginner</option>
-                  <option>intermediate</option>
-                  <option>advanced</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
                 </select></label
-              ><label
-                >Age (optional)<input
-                  name="age"
-                  type="number"
-                  min="13"
-                  max="100" /></label
               ><label
                 >Days per week<input
                   name="frequency"
                   type="number"
+                  inputmode="numeric"
                   min="1"
-                  max="6" /></label
+                  max="6"
+                  required /></label
               ><label
                 >Minutes per session<input
                   name="duration"
                   type="number"
+                  inputmode="numeric"
                   min="15"
-                  max="120" /></label
+                  max="120"
+                  required /></label
               ><label
                 >Preferred split<select name="split">
                   <option>Full Body</option>
@@ -469,52 +1013,122 @@
                   <option>Push/Pull/Legs</option>
                   <option>Custom</option>
                 </select></label
-              >
+              ><label
+                >Age (optional)<input
+                  name="age"
+                  type="number"
+                  inputmode="numeric"
+                  min="13"
+                  max="100"
+              /></label>
             </div>
             <fieldset>
               <legend>Available equipment</legend>
               <div id="equipmentOptions" class="checks"></div>
             </fieldset>
-            <label
-              >Target muscles (comma separated)<input
-                name="muscles"
-                placeholder="chest, back, quads" /></label
-            ><label
-              >Exercise preferences<textarea
-                name="preferences"
-                maxlength="500"
-              ></textarea></label
-            ><label
-              >Injuries or limitations<textarea
-                name="limitations"
-                maxlength="500"
-              ></textarea></label
-            ><label
-              >Recovery information<textarea
-                name="recovery"
-                maxlength="500"
-                placeholder="Sleep, fatigue, or scheduling constraints"
-              ></textarea></label
-            ><label class="check"
-              ><input type="checkbox" name="aiConsent" />Allow sending relevant
-              training summaries and these coaching details to xAI when I ask
-              the coach.</label
-            >
-            <p class="hint">
-              AI requires server configuration. General training guidance cannot
-              diagnose or treat injuries.
-            </p>
+            <details class="inline-details">
+              <summary>Coaching details (optional)</summary>
+              <label
+                >Target muscles (comma separated)<input
+                  name="muscles"
+                  placeholder="chest, back, quads" /></label
+              ><label
+                >Exercise preferences<textarea
+                  name="preferences"
+                  maxlength="500"
+                ></textarea></label
+              ><label
+                >Injuries or limitations<textarea
+                  name="limitations"
+                  maxlength="500"
+                ></textarea></label
+              ><label
+                >Recovery information<textarea
+                  name="recovery"
+                  maxlength="500"
+                  placeholder="Sleep, fatigue, or scheduling constraints"
+                ></textarea>
+              </label>
+            </details>
+            <fieldset class="consent">
+              <legend>AI coach (optional)</legend>
+              <label class="check"
+                ><input type="checkbox" name="aiConsent" />Allow sending
+                relevant training summaries and these coaching details to xAI
+                when I ask the coach.</label
+              >
+              <p class="hint">
+                Off by default. Your name and email are never sent. AI also
+                needs to be enabled on the server; the Coach page shows whether
+                it is. Guidance is general and cannot diagnose or treat
+                injuries.
+              </p>
+            </fieldset>
             <button class="primary">Save profile</button>
           </form>
-          <div class="card">
-            <h2>Import earlier workout history</h2>
+
+          <div class="card" id="accountCard">
+            <h2>Account</h2>
+            <dl class="account-facts">
+              <div>
+                <dt>Name</dt>
+                <dd id="accountNameFull"></dd>
+              </div>
+              <div>
+                <dt>Email</dt>
+                <dd id="accountEmail"></dd>
+              </div>
+              <div>
+                <dt>Units</dt>
+                <dd>Kilograms and centimetres</dd>
+              </div>
+            </dl>
+            <div class="actions">
+              <button id="exportData" class="secondary" type="button">
+                <i data-lucide="download"></i>Export my data
+              </button>
+              <button id="logoutProfile" class="secondary" type="button">
+                Sign out
+              </button>
+            </div>
+            <p class="hint">
+              The export is a JSON file with your profile, workouts, routines,
+              measurements, goals and coach answers.
+              <a href="#privacy">Privacy summary</a> ·
+              <a href="#help">Help</a>
+            </p>
+            <details class="inline-details danger-zone" id="deleteBox">
+              <summary>Delete account</summary>
+              <form id="deleteForm">
+                <p>
+                  This permanently deletes your account and every workout,
+                  routine, measurement, goal and coach answer linked to it. It
+                  cannot be undone. Export your data first if you want a copy.
+                </p>
+                <label
+                  >Confirm with your password<input
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    maxlength="128"
+                    required
+                /></label>
+                <button class="danger" type="submit">
+                  Delete my account permanently
+                </button>
+              </form>
+            </details>
+          </div>
+
+          <details class="card">
+            <summary>Import earlier workout history</summary>
             <p class="muted">
-              Import the old tracker data from this browser, or choose a JSON
-              export from its original address. Review the entries before
+              Import data from the earlier Lantern tracker stored in this
+              browser, or choose its JSON export. Review the entries before
               confirming.
             </p>
             <div class="actions">
-              <button id="importLocal" class="secondary">
+              <button id="importLocal" class="secondary" type="button">
                 Review browser history</button
               ><label class="file-label"
                 >Choose JSON file<input
@@ -524,7 +1138,7 @@
               /></label>
             </div>
             <div id="importPreview"></div>
-          </div>
+          </details>
         </section>
       </main>
     </div>

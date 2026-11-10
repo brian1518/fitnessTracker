@@ -2,7 +2,7 @@
   "name": "lantern-training",
   "version": "1.0.0",
   "private": true,
-  "description": "Green Lantern inspired workout journal",
+  "description": "Strength-training journal: workout logging, progression targets, and progress tracking",
   "scripts": {
     "start": "node --env-file-if-exists=.env src/server.js",
     "dev": "node --env-file-if-exists=.env --watch src/server.js",
@@ -15,7 +15,8 @@
     "test:browser": "node scripts/run-browser-test.js",
     "lint": "prettier --check src scripts tests README.md docs package.json",
     "seed:demo": "node --env-file-if-exists=.env scripts/seed-demo.js",
-    "build:pages": "node scripts/build-pages.js"
+    "build:pages": "node scripts/build-pages.js",
+    "preview": "node scripts/preview.js"
   },
   "engines": {
     "node": ">=22.15"

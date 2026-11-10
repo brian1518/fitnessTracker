@@ -35,8 +35,13 @@ router.post("/auth/register", authLimit, async (req, res) => {
   const session = await auth.createSession(id, res);
   res.status(201).json({ id, name: data.name, email: data.email, ...session });
 });
+// Sign-in accepts any non-empty password so a wrong one always gets the same
+// "incorrect" answer instead of a validation message.
+const loginCredentials = credentials
+  .pick({ email: true })
+  .extend({ password: v.z.string().min(1).max(128) });
 router.post("/auth/login", authLimit, async (req, res) => {
-  const data = credentials.parse(req.body);
+  const data = loginCredentials.parse(req.body);
   const result = await pool.query("SELECT * FROM users WHERE email=$1", [
     data.email,
   ]);
@@ -74,6 +79,109 @@ router.post("/auth/logout", async (req, res) => {
     auth.hash(auth.sessionToken(req)),
   ]);
   res.clearCookie("lantern_session", auth.cookieOptions).json({ ok: true });
+});
+const profileFor = async (userId) =>
+  v.profile.parse(
+    (await pool.query("SELECT data FROM profiles WHERE user_id=$1", [userId]))
+      .rows[0]?.data || {},
+  );
+// Everything stored for the signed-in account, as one downloadable document.
+router.get("/export", async (req, res) => {
+  const id = req.user.id;
+  const rows = async (sql) => (await pool.query(sql, [id])).rows;
+  res.json({
+    format: "lantern-training-export",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    units: { weight: "kg", length: "cm" },
+    account: { name: req.user.name, email: req.user.email },
+    profile: await profileFor(id),
+    workouts: await workouts.list(id),
+    routines: await rows(
+      "SELECT id,name,data,created_at,updated_at FROM plans WHERE user_id=$1 ORDER BY updated_at DESC",
+    ),
+    bodyMeasurements: await rows(
+      "SELECT date,weight,waist,notes FROM body_records WHERE user_id=$1 ORDER BY date DESC",
+    ),
+    goals: await rows(
+      "SELECT kind,exercise_id,target,deadline,created_at FROM goals WHERE user_id=$1 ORDER BY created_at DESC",
+    ),
+    customExercises: await rows(
+      "SELECT id,name,muscle,equipment FROM exercises WHERE owner_id=$1 ORDER BY name",
+    ),
+    coachMessages: await rows(
+      "SELECT question,answer,created_at FROM ai_messages WHERE user_id=$1 ORDER BY created_at DESC",
+    ),
+  });
+});
+// Permanently removes the account; related records are removed by cascade.
+router.post("/account/delete", authLimit, async (req, res) => {
+  const { password } = v.z
+    .object({ password: v.z.string().min(1).max(128) })
+    .parse(req.body);
+  if (req.user.is_demo)
+    return res
+      .status(403)
+      .json({ error: "The demo account cannot be deleted." });
+  const user = (
+    await pool.query("SELECT password_hash FROM users WHERE id=$1", [
+      req.user.id,
+    ])
+  ).rows[0];
+  if (!user || !(await auth.verifyPassword(password, user.password_hash)))
+    return res.status(400).json({ error: "Password is incorrect." });
+  await pool.query("DELETE FROM users WHERE id=$1", [req.user.id]);
+  res.clearCookie("lantern_session", auth.cookieOptions).json({ ok: true });
+});
+const customExercise = v.z.object({
+  name: v.z.string().trim().min(2).max(80),
+  muscle: v.z.enum([
+    "chest",
+    "back",
+    "shoulders",
+    "biceps",
+    "triceps",
+    "quads",
+    "hamstrings",
+    "glutes",
+    "calves",
+    "core",
+  ]),
+  equipment: v.z.enum([
+    "barbell",
+    "dumbbell",
+    "machine",
+    "cable",
+    "bodyweight",
+    "pullup-bar",
+    "dip-bars",
+    "other",
+  ]),
+});
+router.post("/exercises", async (req, res) => {
+  const data = customExercise.parse(req.body);
+  const existing = await pool.query(
+    "SELECT 1 FROM exercises WHERE lower(name)=lower($1) AND (owner_id IS NULL OR owner_id=$2)",
+    [data.name, req.user.id],
+  );
+  if (existing.rowCount)
+    return res
+      .status(409)
+      .json({ error: "An exercise with this name already exists." });
+  const owned = await pool.query(
+    "SELECT count(*)::int AS n FROM exercises WHERE owner_id=$1",
+    [req.user.id],
+  );
+  if (owned.rows[0].n >= 200)
+    return res
+      .status(400)
+      .json({ error: "An account supports up to 200 custom exercises." });
+  const exercise = { id: "custom-" + randomUUID(), ...data };
+  await pool.query(
+    "INSERT INTO exercises(id,name,muscle,equipment,owner_id) VALUES($1,$2,$3,$4,$5)",
+    [exercise.id, data.name, data.muscle, data.equipment, req.user.id],
+  );
+  res.status(201).json(exercise);
 });
 router.get("/exercises", async (req, res) =>
   res.json(
@@ -284,6 +392,22 @@ router.get("/analytics", async (req, res) => {
     ),
   );
 });
+// Tells the interface whether AI interpretation can run, without exposing keys.
+router.get("/coach/status", async (req, res) => {
+  const dailyLimit = ai.dailyCap();
+  const usedToday =
+    (
+      await pool.query(
+        "SELECT requests FROM ai_usage WHERE user_id=$1 AND date=CURRENT_DATE",
+        [req.user.id],
+      )
+    ).rows[0]?.requests || 0;
+  let reason = req.user.is_demo
+    ? "demo"
+    : ai.unavailableReason(await profileFor(req.user.id));
+  if (!reason && usedToday >= dailyLimit) reason = "daily_limit";
+  res.json({ available: !reason, reason, dailyLimit, usedToday });
+});
 router.get("/coach", async (req, res) =>
   res.json(
     (
@@ -339,6 +463,7 @@ router.post("/coach", async (req, res) => {
     .map((r) => ({ date: r.date, weight: r.weight }));
   if (req.user.is_demo) profile.aiConsent = false;
   const answer = await ai.review(req.user.id, question, facts, profile);
+  if (req.user.is_demo) answer.sourceReason = "demo";
   await pool.query(
     "INSERT INTO ai_messages(id,user_id,question,answer) VALUES($1,$2,$3,$4)",
     [randomUUID(), req.user.id, question, answer],

@@ -31,6 +31,7 @@ function buildPages(
   const root = path.resolve(__dirname, "../src/public");
   for (const file of [
     "index.html",
+    "favicon.svg",
     "css/app.css",
     "js/fitness.js",
     "js/workout-logger.js",
